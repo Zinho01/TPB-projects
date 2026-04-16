@@ -1,73 +1,138 @@
-# React + TypeScript + Vite
+# TaskManager – Intern tijdregistratie systeem
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Een intern tool voor het bijhouden van taken en gewerkte uren per medewerker.
 
-Currently, two official plugins are available:
+## Functionaliteiten
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Inloggen** met email en wachtwoord (JWT authenticatie)
+- **Taken beheren** – aanmaken, toewijzen, status bijwerken, verwijderen
+- **Timer** – start/stop tijdregistratie per taak
+- **Tijdregistratie overzicht** – bekijk al je geregistreerde uren
+- **Rapportages** – grafieken van uren per medewerker, per taak en per dag
+- **Admin dashboard** – gebruikers aanmaken, rollen beheren
 
-## React Compiler
+## Technische stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Onderdeel  | Technologie                     |
+|------------|---------------------------------|
+| Frontend   | React 19 + TypeScript + Vite    |
+| Backend    | Node.js + Express + TypeScript  |
+| Database   | MySQL                           |
+| Auth       | JWT (JSON Web Token)            |
 
-## Expanding the ESLint configuration
+## Project opstarten
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Stap 1 – Database instellen
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Zorg dat MySQL draait en voer het schema uit:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+mysql -u root -p < backend/schema.sql
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Of open `backend/schema.sql` in MySQL Workbench en voer het uit.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Stap 2 – Backend instellen
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd backend
+
+# Maak een .env bestand aan op basis van het voorbeeld
+cp .env.example .env
+
+# Open .env en vul je eigen MySQL gegevens in:
+# DB_PASSWORD=jouw_wachtwoord
+# JWT_SECRET=een_lange_geheime_string
+
+# Dependencies installeren
+npm install
+
+# Backend starten (op poort 3001)
+npm run dev
 ```
+
+### Stap 3 – Frontend starten
+
+Open een nieuw terminal venster:
+
+```bash
+# Terug naar de Intern-Tool hoofdmap
+cd ..
+
+# Dependencies installeren (als dat nog niet gedaan is)
+npm install
+
+# Frontend starten (op poort 5173)
+npm run dev
+```
+
+### Stap 4 – Inloggen
+
+Open de browser en ga naar: `http://localhost:5173`
+
+Standaard inloggegevens:
+- **Email:** admin@taskmanager.nl
+- **Wachtwoord:** admin123
+
+> Verander het wachtwoord na de eerste keer inloggen!
+
+## Mapstructuur
+
+```
+Intern-Tool/
+├── src/                      # React frontend
+│   ├── api/
+│   │   └── client.ts         # Alle communicatie met de backend
+│   ├── context/
+│   │   └── AuthContext.tsx   # Inlogstatus bijhouden
+│   ├── components/
+│   │   ├── Navbar.tsx        # Navigatiebalk
+│   │   └── Timer.tsx         # Live timer component
+│   ├── pages/
+│   │   ├── Login.tsx         # Inlogpagina
+│   │   ├── Dashboard.tsx     # Hoofdpagina na inloggen
+│   │   ├── Taken.tsx         # Takenlijst
+│   │   ├── TaakDetail.tsx    # Detail + tijdregistratie per taak
+│   │   ├── Tijdregistratie.tsx # Overzicht van uren
+│   │   ├── Rapportages.tsx   # Grafieken en statistieken
+│   │   └── Admin.tsx         # Gebruikersbeheer (alleen admin)
+│   ├── App.tsx               # Routing
+│   └── index.css             # Alle styling
+│
+└── backend/                  # Express backend
+    ├── src/
+    │   ├── server.ts         # Hoofdserver
+    │   ├── db.ts             # Database verbinding
+    │   ├── middleware/
+    │   │   └── auth.ts       # JWT controle
+    │   └── routes/
+    │       ├── auth.ts       # Login en registratie
+    │       ├── tasks.ts      # Taken beheren
+    │       ├── time.ts       # Tijdregistratie (start/stop timer)
+    │       ├── users.ts      # Gebruikersbeheer
+    │       └── reports.ts    # Rapportages genereren
+    ├── schema.sql            # Database structuur
+    └── .env.example          # Voorbeeld configuratie
+```
+
+## API endpoints
+
+| Methode | Pad                        | Beschrijving                     |
+|---------|----------------------------|----------------------------------|
+| POST    | /api/auth/login            | Inloggen                         |
+| POST    | /api/auth/register         | Nieuw account aanmaken           |
+| GET     | /api/auth/mij              | Ingelogde gebruiker ophalen      |
+| GET     | /api/tasks                 | Alle taken ophalen               |
+| POST    | /api/tasks                 | Nieuwe taak aanmaken             |
+| PUT     | /api/tasks/:id             | Taak bijwerken                   |
+| DELETE  | /api/tasks/:id             | Taak verwijderen                 |
+| POST    | /api/time/start/:taakId    | Timer starten                    |
+| POST    | /api/time/stop/:id         | Timer stoppen                    |
+| GET     | /api/time/lopend           | Actieve timer ophalen            |
+| GET     | /api/reports/overzicht     | Algemene statistieken            |
+| GET     | /api/reports/per-gebruiker | Uren per medewerker              |
+| GET     | /api/reports/per-taak      | Uren per taak                    |
+| GET     | /api/reports/week          | Uren per dag (afgelopen week)    |
+| GET     | /api/users                 | Alle gebruikers (alleen admin)   |
+| PUT     | /api/users/:id             | Gebruiker aanpassen (admin)      |
+| DELETE  | /api/users/:id             | Gebruiker verwijderen (admin)    |

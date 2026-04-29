@@ -29,6 +29,7 @@ sudo systemctl start mysql
 Importeer het schema in MySQL. Dit maakt de database aan en voegt een standaard admin-account toe.
 
 **Via de terminal:**
+
 ```bash
 mysql -u root -p < Intern-Tool/backend/schema.sql
 ```
@@ -37,6 +38,7 @@ mysql -u root -p < Intern-Tool/backend/schema.sql
 Ga naar `http://localhost/phpmyadmin`, maak een database `taskmanager` aan en importeer `Intern-Tool/backend/schema.sql`.
 
 Standaard inloggegevens:
+
 - **E-mail:** `admin@taskmanager.nl`
 - **Wachtwoord:** `admin123`
 
@@ -58,7 +60,7 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=pixeldam020
 DB_NAME=taskmanager
-JWT_SECRET=verander_dit_naar_iets_veiligs
+WJT_SECRET=verander_dit_naar_iets_veiligs
 PORT=3001
 ```
 
@@ -75,12 +77,14 @@ npm install
 Je hebt twee terminalvensters nodig: één voor de backend, één voor de frontend.
 
 **Terminal 1 — backend:**
+
 ```bash
 cd Intern-Tool/backend
 npm run dev
 ```
 
 **Terminal 2 — frontend:**
+
 ```bash
 cd Intern-Tool
 npm install

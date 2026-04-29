@@ -34,6 +34,13 @@ export default function TaakDetail() {
   const { isAdmin } = useAuth()
   const [taak, setTaak] = useState<TaakDetail | null>(null)
   const [isLaden, setIsLaden] = useState(true)
+  const [bewerkModus, setBewerkModus] = useState(false)
+  const [bewerkFormulier, setBewerkFormulier] = useState({
+    titel: '',
+    omschrijving: '',
+    prioriteit: '',
+    deadline: '',
+  })
 
   // Taak laden als de pagina opent of als het ID verandert
   useEffect(() => {
@@ -44,10 +51,30 @@ export default function TaakDetail() {
     try {
       const data = await api.get(`/tasks/${id}`)
       setTaak(data)
+      setBewerkFormulier({
+        titel: data.titel,
+        omschrijving: data.omschrijving || '',
+        prioriteit: data.prioriteit,
+        deadline: data.deadline ? data.deadline.split('T')[0] : '',
+      })
     } catch (fout) {
       console.error('Fout bij ophalen taak:', fout)
     } finally {
       setIsLaden(false)
+    }
+  }
+
+  async function handleOpslaan(e: React.FormEvent) {
+    e.preventDefault()
+    try {
+      await api.put(`/tasks/${id}`, {
+        ...bewerkFormulier,
+        deadline: bewerkFormulier.deadline || null,
+      })
+      setBewerkModus(false)
+      laadTaak()
+    } catch (fout: any) {
+      alert(fout.message)
     }
   }
 
@@ -88,10 +115,63 @@ export default function TaakDetail() {
             )}
           </div>
         </div>
+        {isAdmin && (
+          <button className="btn-primair" onClick={() => setBewerkModus(!bewerkModus)}>
+            {bewerkModus ? 'Annuleren' : 'Bewerken'}
+          </button>
+        )}
       </div>
 
+      {/* Bewerkformulier — alleen zichtbaar als bewerkModus aan staat */}
+      {bewerkModus && (
+        <div className="formulier-kaart">
+          <h2>Taak bewerken</h2>
+          <form onSubmit={handleOpslaan} className="taak-formulier">
+            <div className="veld-groep">
+              <label>Titel *</label>
+              <input
+                type="text"
+                value={bewerkFormulier.titel}
+                onChange={(e) => setBewerkFormulier({ ...bewerkFormulier, titel: e.target.value })}
+                required
+              />
+            </div>
+            <div className="veld-groep">
+              <label>Omschrijving</label>
+              <textarea
+                value={bewerkFormulier.omschrijving}
+                onChange={(e) => setBewerkFormulier({ ...bewerkFormulier, omschrijving: e.target.value })}
+                rows={3}
+              />
+            </div>
+            <div className="veld-rij">
+              <div className="veld-groep">
+                <label>Prioriteit</label>
+                <select
+                  value={bewerkFormulier.prioriteit}
+                  onChange={(e) => setBewerkFormulier({ ...bewerkFormulier, prioriteit: e.target.value })}
+                >
+                  <option value="laag">Laag</option>
+                  <option value="normaal">Normaal</option>
+                  <option value="hoog">Hoog</option>
+                </select>
+              </div>
+              <div className="veld-groep">
+                <label>Deadline</label>
+                <input
+                  type="date"
+                  value={bewerkFormulier.deadline}
+                  onChange={(e) => setBewerkFormulier({ ...bewerkFormulier, deadline: e.target.value })}
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn-primair">Opslaan</button>
+          </form>
+        </div>
+      )}
+
       {/* Omschrijving */}
-      {taak.omschrijving && (
+      {taak.omschrijving && !bewerkModus && (
         <div className="detail-sectie">
           <h2>Omschrijving</h2>
           <p>{taak.omschrijving}</p>

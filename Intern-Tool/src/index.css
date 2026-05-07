@@ -317,6 +317,12 @@ body {
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-kaart:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .stat-getal {
@@ -412,6 +418,12 @@ body {
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   gap: 1rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.taak-rij:hover {
+  transform: translateX(3px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.09);
 }
 
 .taak-info {

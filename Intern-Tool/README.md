@@ -19,6 +19,13 @@ Een intern tool voor het bijhouden van taken en gewerkte uren per medewerker.
 | Backend    | Node.js + Express + TypeScript  |
 | Database   | MySQL                           |
 | Auth       | JWT (JSON Web Token)            |
+| Tests      | Cypress (E2E)                   |
+
+## Vereisten
+
+- Node.js 18+
+- MySQL 8+
+- npm
 
 ## Project opstarten
 
@@ -136,3 +143,15 @@ Intern-Tool/
 | GET     | /api/users                 | Alle gebruikers (alleen admin)   |
 | PUT     | /api/users/:id             | Gebruiker aanpassen (admin)      |
 | DELETE  | /api/users/:id             | Gebruiker verwijderen (admin)    |
+
+## Tests
+
+E2E tests worden uitgevoerd met Cypress. Zorg dat de backend en frontend beide actief zijn voordat je de tests start.
+
+```bash
+# Tests uitvoeren in de browser
+npx cypress open
+
+# Tests headless draaien
+npx cypress run
+```

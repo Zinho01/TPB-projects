@@ -7,6 +7,21 @@
   padding: 0;
 }
 
+/* ── Animaties ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Basisstijl voor de hele pagina */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -104,6 +119,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  animation: fadeIn 0.3s ease;
 }
 
 .pagina-header {
@@ -521,6 +537,7 @@ body {
 
 .timer-klok.actief {
   color: #1565c0;
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .timer-taak-naam {
@@ -840,6 +857,18 @@ body {
   text-align: center;
   padding: 3rem;
   color: #888;
+}
+
+.laden::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 1rem auto 0;
+  border: 3px solid #e8ecf0;
+  border-top-color: #4fc3f7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 .fout {
